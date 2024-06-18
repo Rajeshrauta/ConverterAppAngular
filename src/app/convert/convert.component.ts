@@ -84,6 +84,7 @@ export class ConvertComponent {
     if (this.selectedFile) {
       this.splits.forEach(split => {
         if (split.pageRange.trim() !== '' && this.isValidPageRange(split.pageRange.trim())) {
+          console.log("split called")
           this.fileManagerService.splitPdf(this.selectedFile!, split.pageRange, split.newFileName).subscribe({
             next: (response) => {
               const name = split.newFileName ? `${split.newFileName}.pdf` : `split_${this.selectedFile!.name}`;
@@ -119,8 +120,22 @@ export class ConvertComponent {
   }
 
   isValidPageRange(range: string): boolean {
-    // Check if range is a valid integer
-    const isValidInteger = /^\d+$/.test(range);
-    return isValidInteger;
+    const ranges = range.split(',');
+    const singlePageRegex = /^\d+$/;
+    const pageRangeRegex = /^\d+-\d+$/;
+
+    for (let part of ranges) {
+      part = part.trim();
+      if (!singlePageRegex.test(part) && !pageRangeRegex.test(part)) {
+        return false;
+      }
+      if (pageRangeRegex.test(part)) {
+        const [start, end] = part.split('-').map(Number);
+        if (start > end) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
