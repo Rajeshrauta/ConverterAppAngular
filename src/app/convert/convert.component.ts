@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, AfterViewInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FileManagerService } from '../file-manager.service';
-import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver-es';
 
 interface SplitInput {
   pageRange: string;
@@ -16,7 +16,7 @@ interface SplitInput {
   templateUrl: './convert.component.html',
   styleUrl: './convert.component.scss'
 })
-export class ConvertComponent {
+export class ConvertComponent implements AfterViewInit {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   acceptedFileTypes: string = '';
@@ -27,6 +27,12 @@ export class ConvertComponent {
 
   constructor(private fileManagerService: FileManagerService) { }
 
+  ngAfterViewInit(): void {
+    if (this.fileInput) {
+      this.fileInput.nativeElement.style.display = 'none';
+    }
+  }
+
   onFileTypeChange(event: any): void {
     this.selectedFileType = event.target.value;
     this.acceptedFileTypes = this.selectedFileType === 'pdf' ? '.pdf' : '.docx';
@@ -35,6 +41,7 @@ export class ConvertComponent {
 
   clearFileInput(): void {
     if (this.fileInput) {
+      this.fileInput.nativeElement.style.display = 'block';
       this.fileInput.nativeElement.value = '';
     }
     this.selectedFile = null;

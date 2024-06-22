@@ -8,29 +8,33 @@
         </label>
     </div>
 
-    <div class="file-upload">
-        <input type="file" #fileInput (change)="onFileSelected($event)" [accept]="acceptedFileTypes">
-    </div>
+    <div *ngIf="selectedFileType === 'pdf' || selectedFileType === 'docx'">
 
-    <div *ngIf="selectedFileType === 'pdf'" class="pdf-options">
-        <button (click)="rotatePdf('left')">Rotate Left</button>
-        <button (click)="rotatePdf('right')">Rotate Right</button>
-        <button (click)="toggleSplitOptions()">Split PDF</button>
-
-        <div *ngIf="showSplitOptions" class="split-options">
-            <div *ngFor="let split of splits; let i = index" class="split-row">
-                <input type="text" placeholder="Page Range (e.g., 1-3)" [(ngModel)]="split.pageRange">
-                <input type="text" placeholder="New File Name" [(ngModel)]="split.newFileName">
-                <button (click)="removeSplit(i)">Remove</button>
-            </div>
-            <button (click)="addSplitRow()">Add Row</button>
-            <button (click)="splitPdf()">Perform Split</button>
+        <div class="file-upload">
+            <input type="file" #fileInput (change)="onFileSelected($event)" [accept]="acceptedFileTypes">
         </div>
 
-        <button (click)="convertPdfToDocx()">Convert PDF to DOCX</button>
-    </div>
+        <div *ngIf="selectedFileType === 'pdf'" class="pdf-options">
+            <button (click)="convertPdfToDocx()">Convert PDF to DOCX</button>
+            <br>
+            <button (click)="rotatePdf('left')">Rotate Left</button>
+            <button (click)="rotatePdf('right')">Rotate Right</button>
+            <button (click)="toggleSplitOptions()">Split PDF</button>
 
-    <div *ngIf="selectedFileType === 'docx'" class="docx-options">
-        <button (click)="convertDocxToPdf()">Convert DOCX to PDF</button>
+            <div *ngIf="showSplitOptions" class="split-options">
+                <div *ngFor="let split of splits; let i = index" class="split-row">
+                    <input type="text" placeholder="Page Range (e.g., 1-3)" [(ngModel)]="split.pageRange">
+                    <input type="text" placeholder="New File Name" [(ngModel)]="split.newFileName">
+                    <button (click)="removeSplit(i)">Remove</button>
+                </div>
+                <button (click)="addSplitRow()">Add Row</button>
+                <button (click)="splitPdf()">Perform Split</button>
+            </div>
+        </div>
+
+        <div *ngIf="selectedFileType === 'docx'" class="docx-options">
+            <button (click)="convertDocxToPdf()">Convert DOCX to PDF</button>
+        </div>
+
     </div>
 </div>
